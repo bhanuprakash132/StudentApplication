@@ -1,0 +1,62 @@
+﻿@model List<StudentApplication.ViewModel.StudentSubjectViewModel>
+
+@{
+    ViewBag.Title = "All Student";
+}
+
+<h1>All Student</h1>
+<div class="input-group" style="float: right; display: block;margin: 10px;">
+    <a href="@Url.Action("AddStudent","Student")" class="btn btn-primary" style="float:right">Add Student</a>
+</div>
+<table class="table table-striped" id="MyDataTable">
+    <thead>
+        <tr>
+            <th>Student Id</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Class</th>
+            <th>Subject</th>
+            <th>Marks</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                @if (item.Id != 0)
+                {
+                    <td>@item.Id</td>
+                }
+                else
+                {
+                    <td></td>
+                }
+                @* <td>@item.Id</td>*@
+                <td>@item.FirstName</td>
+                <td>@item.LastName</td>
+                <td>@item.ClassName</td>
+                <td>@item.SubjectName</td>
+                <td>@item.Marks</td>
+                <td><a href="@Url.Action("EditStudent","Student", new { studentId = item.SerialNo, subjectId = item.SubjectId })" class="btn btn-primary">Edit</a>
+                
+                    <a href="@Url.Action("DeleteStudent","Student", new { studentId = item.Id })" class="btn btn-danger"
+                       onclick="return confirm('Are you sure you want to delete student : ')">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts{
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.25/af-2.3.7/datatables.min.css" />
+
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.25/af-2.3.7/datatables.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#MyDataTable").DataTable();
+        }
+        )
+    </script>
+}

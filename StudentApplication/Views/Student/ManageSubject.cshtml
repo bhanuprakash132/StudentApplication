@@ -1,0 +1,98 @@
+﻿@model IEnumerable<StudentApplication.ViewModel.ManageStudentSubjectViewModel>
+@{
+    ViewBag.Title = "Manage Subject";
+}
+@if (Model.Any())
+{
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body p-0">
+                <table id="idgrid" class="table">
+                    <thead>
+                        <tr>
+                            @* <th style="width: 10px">#</th>*@
+                            <th>Subject Id</th>
+                            <th>Subject Name</th>
+                            <th>Marks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var menu in Model)
+                        {
+                            <tr>
+                                @*<td><input type="checkbox" id="chk_@menu.SubjectId" value="@menu.SubjectId" /></td>*@
+                                <td id="sub_@menu.SubjectId">@menu.SubjectId</td>
+                                <td>@menu.SubjectName</td>
+                                <td><input type="text" id="txt_@menu.SubjectId" class='allow_decimal' value="@menu.Marks" /></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-header">
+                <button id="btnSave" class="btn btn-primary fa-pull-right">Save</button>
+                <a href="@Url.Action("AssignSubject","Student")" class="btn btn-secondary">Cancel</a>
+               @* <button type="submit" asp-action="AssignSubject" asp-controller="Student" class="btn btn-primary">Cancel</button>*@
+            </div>
+           
+        </div>
+
+    </div>
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $(".allow_decimal").on("input", function (evt) {
+            var self = $(this);
+            self.val(self.val().replace(/[^0-9\.]/g, ''));
+            if ((evt.which != 46 || self.val().indexOf('.') != -1) && (evt.which < 48 || evt.which > 57)) {
+                evt.preventDefault();
+            }
+        });
+
+        $("#btnSave").on('click', function (e) {
+            debugger;
+            var studentId = @ViewBag.studentId;
+            var viewModel = [];
+            // loop over each table row (tr)
+            var i = 0;
+            $("#idgrid tr").each(function () {
+                if (i!=0) {
+                    var currentRow = $(this);
+                    var col1_value = currentRow.find("td:eq(0)").text();
+                    var col2_value = currentRow.find("td:eq(1)").text();
+                    var col3_value = currentRow.find("td:eq(2) input").val();
+                    requestData = {
+                        SubjectId: col1_value,
+                        SubjectName: col2_value,
+                        StudentId: studentId,
+                        Marks: col3_value
+                    }
+                    if (requestData.Marks != '' && requestData.Marks != null) {
+                        viewModel.push(requestData);
+                    }                    
+                }
+                i++;
+            });
+            $.ajax({                type: 'POST',                dataType: 'json',                cache: false,                url: '/Student/ManageSubject',                data: {'viewModel': viewModel},                success: function (data, textStatus, jqXHR) {                    //Do Stuff                                     },                error: function (jqXHR, textStatus, errorThrown) {                    //Do Stuff or Nothing                }            });
+        });
+
+    });
+
+</script>
+
+@section scripts{
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.25/af-2.3.7/datatables.min.css" />
+
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.25/af-2.3.7/datatables.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#MyDataTable").DataTable();
+        }
+        )
+    </script>
+}
+

@@ -1,0 +1,44 @@
+﻿@model List<StudentApplication.Models.Student>
+@{
+    ViewBag.Title = "All Student";
+}
+
+<h1>All Student</h1>
+
+<table class="table table-striped" id="MyDataTable">
+    <thead>
+        <tr>
+            <th>Student Id</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Class</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @*@{int index = 1;}*@
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>@item.Id</td>
+            <td>@item.FirstName</td>
+            <td>@item.LastName</td>
+            <td>@item.ClassName</td>
+            <td><a asp-action="ManageSubject" asp-controller="Student" asp-route-studentId="@item.Id" class="btn btn-primary">Assign Subject</a></td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts{
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.25/af-2.3.7/datatables.min.css" />
+
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.25/af-2.3.7/datatables.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#MyDataTable").DataTable();
+        }
+        )
+    </script>
+}
