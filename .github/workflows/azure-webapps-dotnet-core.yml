@@ -1,29 +1,28 @@
+name: Manual .NET Build
 
-name : Manual .NET Build
-
-on :
-    workflow_dispatch:
-
-#permissions:
-  #contents: read
+on:
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Set up .NET Core
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '5.0'
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
 
-      - name: Restore dependencies
-        run: dotnet restore
+    - name: Install OpenSSL
+      run: sudo apt-get update && sudo apt-get install -y libssl1.1
 
-      - name: Build
-        run: dotnet build --no-restore --configuration Release
+    - name: Restore dependencies
+      run: dotnet restore
 
-      - name: Test
-        run: dotnet test --no-build --verbosity normal
+    - name: Build
+      run: dotnet build --no-restore --configuration Release
+
+    - name: Run tests
+      run: dotnet test --no-build --verbosity normal
